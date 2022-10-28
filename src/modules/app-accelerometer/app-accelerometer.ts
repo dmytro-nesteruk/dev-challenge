@@ -35,6 +35,11 @@ export class AppAccelerometer {
   };
 
   private update = (e: DeviceMotionEvent) => {
+    console.log('updated');
+    console.log(e.acceleration?.x);
+    console.log(e.acceleration?.y);
+    console.log(e.acceleration?.z);
+
     this.container.innerText = e.acceleration?.x?.toString() as string;
   };
 }
