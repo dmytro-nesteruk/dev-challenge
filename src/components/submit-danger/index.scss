@@ -1,0 +1,16 @@
+@import '../../assets/styles/variables';
+@import '../../assets/styles/mixins';
+
+.selected-danger {
+  border-radius: 50%;
+  border: 8px dashed $beige;
+  padding: 2px;
+  width: min-content;
+
+  &-button {
+    background-color: $red;
+    border-radius: 50%;
+    border: 20px solid $black;
+    padding: 30px;
+  }
+}
