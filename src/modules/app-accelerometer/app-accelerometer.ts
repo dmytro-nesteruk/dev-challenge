@@ -12,11 +12,18 @@ export class AppAccelerometer {
   private btn: HTMLButtonElement;
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
+  private angle: number;
+  private fps: number;
+
+  private initAnimation: number;
 
   constructor({ eventEmitter }: IAppAccelerometerProps) {
     this.eventEmitter = eventEmitter;
     this.container = document.createElement('div');
-    this.image = new Image(100);
+    this.angle = 0;
+    this.fps = 0;
+    this.initAnimation = 1;
+    this.image = new Image(200);
     this.btn = document.createElement('button');
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -28,8 +35,7 @@ export class AppAccelerometer {
   }
 
   private init = () => {
-    this.btn.innerText = 'Start';
-    this.btn.addEventListener('click', this.getPermissionAndSubscribe);
+    this.canvas.addEventListener('click', this.getPermissionAndSubscribe);
     this.image.src = roseIcon;
 
     this.image.onload = () => {
@@ -38,6 +44,7 @@ export class AppAccelerometer {
 
     this.container.append(this.btn);
     this.container.append(this.canvas);
+    this.initAnimation = requestAnimationFrame(this.drawRose);
   };
 
   private initCanvas = () => {
@@ -54,8 +61,14 @@ export class AppAccelerometer {
     this.ctx.fillText('E', 200 - 28, 120 - 12);
   };
 
-  private drawRose = (angle: number) => {
-    this.ctx.rotate(angle);
+  private drawRose = () => {
+    this.ctx.save();
+
+    this.ctx.clearRect(0, 0, 200, 200);
+    this.ctx.translate(100, 100);
+    this.ctx.rotate(this.angle);
+    this.ctx.translate(-100, -100);
+
     this.ctx.drawImage(this.image, 40, 40, 120, 120);
     this.ctx.font = '24px serif';
     this.ctx.textAlign = 'center';
@@ -63,6 +76,12 @@ export class AppAccelerometer {
     this.ctx.fillText('S', 120 - 20, 200 - 18);
     this.ctx.fillText('W', 24, 120 - 12);
     this.ctx.fillText('E', 200 - 28, 120 - 12);
+
+    this.ctx.restore();
+    if (this.initAnimation) {
+      this.angle += 0.01;
+    }
+    this.initAnimation = requestAnimationFrame(this.drawRose);
   };
 
   getPermissionAndSubscribe = () => {
@@ -70,19 +89,20 @@ export class AppAccelerometer {
 
     if (DeviceMotionEvent && typeof (DeviceMotionEvent as any).requestPermission === 'function') {
       (DeviceMotionEvent as any).requestPermission();
-      window.addEventListener('deviceorientation', this.update);
+      window.addEventListener('deviceorientation', this.calc);
+      cancelAnimationFrame(this.initAnimation);
+      requestAnimationFrame(this.drawRose);
     } else {
       console.log('Not supported');
     }
   };
 
-  private update = (e: DeviceOrientationEvent) => {
+  private calc = (e: DeviceOrientationEvent) => {
+    this.fps += 1;
+    if (this.fps <= 10) return;
     const { alpha, beta, gamma } = e;
     if (!alpha || !beta || !gamma) return;
-    const deg = this.compassHeading(alpha, beta, gamma);
-    console.log(deg);
-
-    this.drawRose(deg);
+    this.angle = this.compassHeading(alpha, beta, gamma);
   };
 
   compassHeading(alpha: number, beta: number, gamma: number) {
