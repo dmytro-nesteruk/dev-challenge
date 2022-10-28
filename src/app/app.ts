@@ -23,6 +23,7 @@ export class App {
     this.selectedDanger = Danger['helicopter'];
 
     this.eventEmitter = new EventEmitter();
+
     this.accelerometer = new AppAccelerometer({ eventEmitter: this.eventEmitter });
     this.geolocation = new Geolocation();
 
@@ -30,6 +31,7 @@ export class App {
       defaultDanger: this.selectedDanger,
       eventEmitter: this.eventEmitter,
     });
+
     this.dangerPicker = new DangerPicker({
       defaultDanger: this.selectedDanger,
       emitt: this.eventEmitter.notifySubscribers,

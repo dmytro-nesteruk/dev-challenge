@@ -26,8 +26,8 @@ export class AppAccelerometer {
     } else {
       console.log('Accelerometer not supported');
     }
-
-    if (window.DeviceMotionEvent) {
+    if (DeviceMotionEvent && typeof (DeviceMotionEvent as any).requestPermission === 'function') {
+      (DeviceMotionEvent as any).requestPermission();
       window.addEventListener('devicemotion', this.update);
     } else {
       console.log('Not supported');
