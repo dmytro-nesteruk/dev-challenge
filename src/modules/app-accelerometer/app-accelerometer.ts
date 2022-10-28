@@ -3,15 +3,18 @@ import { EventEmitter } from '../event-emitter';
 interface IAppAccelerometerProps {
   eventEmitter: EventEmitter;
 }
+
 export class AppAccelerometer {
   private eventEmitter: EventEmitter;
   private container: HTMLDivElement;
-  private accelerometer: Accelerometer | undefined;
+  private btn: HTMLButtonElement;
   constructor({ eventEmitter }: IAppAccelerometerProps) {
     this.eventEmitter = eventEmitter;
     this.container = document.createElement('div');
-    this.accelerometer = undefined;
-    this.init();
+    this.btn = document.createElement('button');
+    this.btn.innerText = 'click';
+    this.btn.addEventListener('click', this.init);
+    this.container.append(this.btn);
   }
 
   get element() {
@@ -19,13 +22,7 @@ export class AppAccelerometer {
   }
 
   private init = () => {
-    if ('Accelerometer' in window) {
-      this.accelerometer = new Accelerometer();
-      this.accelerometer.start();
-      this.eventEmitter.notifySubscribers('DANGER_TYPE_CHANGED', 'text');
-    } else {
-      console.log('Accelerometer not supported');
-    }
+    this.eventEmitter.notifySubscribers('DANGER_TYPE_CHANGED', 'sd');
     if (DeviceMotionEvent && typeof (DeviceMotionEvent as any).requestPermission === 'function') {
       (DeviceMotionEvent as any).requestPermission();
       window.addEventListener('devicemotion', this.update);
