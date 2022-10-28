@@ -13,8 +13,6 @@ interface ISubmitDangerConstructor {
   eventEmitter: EventEmitter;
 }
 
-const PATH = `/src/assets/icons/`;
-
 const icons = {
   rocket,
   drone,
