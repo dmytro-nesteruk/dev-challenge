@@ -21,11 +21,12 @@ export class AppAccelerometer {
       const accelerometer = new Accelerometer();
       accelerometer.onreading = (e) => console.log(e);
       accelerometer.start();
+      this.eventEmitter.notifySubscribers('DANGER_TYPE_CHANGED', 'text');
     }
   };
 
-  private update = (e: DeviceMotionEvent) => {
+  /*   private update = (e: DeviceMotionEvent) => {
     console.log(e);
     this.container.innerText = e.acceleration?.x?.toString() as string;
-  };
+  }; */
 }
