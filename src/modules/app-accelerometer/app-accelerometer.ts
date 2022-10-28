@@ -8,6 +8,7 @@ interface IAppAccelerometerProps {
 export class AppAccelerometer {
   private eventEmitter: EventEmitter;
   private container: HTMLDivElement;
+  private image: HTMLImageElement;
   private btn: HTMLButtonElement;
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -15,6 +16,7 @@ export class AppAccelerometer {
   constructor({ eventEmitter }: IAppAccelerometerProps) {
     this.eventEmitter = eventEmitter;
     this.container = document.createElement('div');
+    this.image = new Image(100);
     this.btn = document.createElement('button');
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -28,8 +30,11 @@ export class AppAccelerometer {
   private init = () => {
     this.btn.innerText = 'Start';
     this.btn.addEventListener('click', this.getPermissionAndSubscribe);
+    this.image.src = roseIcon;
 
-    this.initCanvas();
+    this.image.onload = () => {
+      this.initCanvas();
+    };
 
     this.container.append(this.btn);
     this.container.append(this.canvas);
@@ -40,18 +45,24 @@ export class AppAccelerometer {
     this.canvas.height = 200;
     this.canvas.style.border = '1px solid red';
 
-    const image = new Image(120, 120);
-    image.src = roseIcon;
+    this.ctx.drawImage(this.image, 40, 40, 120, 120);
+    this.ctx.font = '24px serif';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('N', 120 - 20, 32);
+    this.ctx.fillText('S', 120 - 20, 200 - 18);
+    this.ctx.fillText('W', 24, 120 - 12);
+    this.ctx.fillText('E', 200 - 28, 120 - 12);
+  };
 
-    image.onload = () => {
-      this.ctx.drawImage(image, 40, 40, 120, 120);
-      this.ctx.font = '24px serif';
-      this.ctx.textAlign = 'center';
-      this.ctx.fillText('N', 120 - 20, 32);
-      this.ctx.fillText('S', 120 - 20, 200 - 18);
-      this.ctx.fillText('W', 24, 120 - 12);
-      this.ctx.fillText('E', 200 - 28, 120 - 12);
-    };
+  private drawRose = (angle: number) => {
+    this.ctx.rotate(angle);
+    this.ctx.drawImage(this.image, 40, 40, 120, 120);
+    this.ctx.font = '24px serif';
+    this.ctx.textAlign = 'center';
+    this.ctx.fillText('N', 120 - 20, 32);
+    this.ctx.fillText('S', 120 - 20, 200 - 18);
+    this.ctx.fillText('W', 24, 120 - 12);
+    this.ctx.fillText('E', 200 - 28, 120 - 12);
   };
 
   getPermissionAndSubscribe = () => {
@@ -69,7 +80,9 @@ export class AppAccelerometer {
     const { alpha, beta, gamma } = e;
     if (!alpha || !beta || !gamma) return;
     const deg = this.compassHeading(alpha, beta, gamma);
-    this.ctx.rotate(deg);
+    console.log(deg);
+
+    this.drawRose(deg);
   };
 
   compassHeading(alpha: number, beta: number, gamma: number) {
@@ -99,6 +112,6 @@ export class AppAccelerometer {
       compassHeading += 2 * Math.PI;
     }
 
-    return compassHeading * (180 / Math.PI); // Compass Heading (in degrees)
+    return compassHeading; // Compass Heading
   }
 }
