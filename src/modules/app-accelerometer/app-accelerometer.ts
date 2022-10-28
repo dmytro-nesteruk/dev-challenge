@@ -21,15 +21,20 @@ export class AppAccelerometer {
   private init = () => {
     if ('Accelerometer' in window) {
       this.accelerometer = new Accelerometer();
-      this.accelerometer.addEventListener('reading', () => this.update());
       this.accelerometer.start();
       this.eventEmitter.notifySubscribers('DANGER_TYPE_CHANGED', 'text');
+    } else {
+      console.log('Accelerometer not supported');
+    }
+
+    if (window.DeviceMotionEvent) {
+      window.addEventListener('devicemotion', this.update);
+    } else {
+      console.log('Not supported');
     }
   };
 
-  private update = () => {
-    if (this.accelerometer) {
-      this.container.innerText = this.accelerometer.x?.toString() as string;
-    }
+  private update = (e: DeviceMotionEvent) => {
+    this.container.innerText = e.acceleration?.x?.toString() as string;
   };
 }
