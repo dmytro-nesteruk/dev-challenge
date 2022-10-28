@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "tsc && vite build && git add . && git commit -am \"deploy\" && git push --prefix dist origin master "
+    "test": "tsc && vite build && git add . && git commit -am \"deploy\" && git push origin master "
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.41.0",
