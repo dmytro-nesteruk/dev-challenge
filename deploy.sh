@@ -4,6 +4,8 @@
 set -e
 
 # build
+tsc
+
 npm run build
 
 # navigate into the build output directory
