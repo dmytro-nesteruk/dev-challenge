@@ -2,12 +2,26 @@ import './index.scss';
 import { DangerType } from '../../@types/general';
 import { EventEmitter } from '../../modules/event-emitter';
 
+import rocket from '../../assets/icons/rocket.svg';
+import drone from '../../assets/icons/drone.svg';
+import airplane from '../../assets/icons/airplane.svg';
+import helicopter from '../../assets/icons/helicopter.svg';
+import explosion from '../../assets/icons/explosion.svg'
+
 interface ISubmitDangerConstructor {
   defaultDanger: DangerType;
   eventEmitter: EventEmitter;
 }
 
 const PATH = `/src/assets/icons/`;
+
+const icons = {
+  rocket,
+  drone,
+  airplane,
+  helicopter,
+  explosion,
+}
 
 export class SubmitDanger {
   public selectedDanger: DangerType;
@@ -23,7 +37,7 @@ export class SubmitDanger {
 
     this.container = document.createElement('div');
     this.button = this.createBtn();
-    this.icon = this.createIcon(`${PATH}/${this.selectedDanger}.svg`);
+    this.icon = this.createIcon(icons[this.selectedDanger]);
 
     this.init();
   }
@@ -70,6 +84,6 @@ export class SubmitDanger {
 
   private update = (danger: DangerType) => {
     this.selectedDanger = danger;
-    this.icon.src = `${PATH}/${danger}.svg`;
+    this.icon.src = icons[this.selectedDanger];
   };
 }
