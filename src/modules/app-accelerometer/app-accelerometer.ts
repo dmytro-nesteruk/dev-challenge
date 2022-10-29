@@ -136,12 +136,12 @@ export class AppAccelerometer {
       this.angle = this.fromQuaternionToCompassHeading(this.deviceToScreen(quaternion, orientatiionAngle));
       return;
     } else {
-      // if (this.rotation) {
-      //   const quaternion = this.toQuaternion(heading, e.beta, e.gamma);
-
-      //   this.angle = this.fromQuaternionToCompassHeading(this.deviceToScreen(quaternion, this.rotation));
-      //   return;
-      // }
+       if (this.rotation) {
+       const quaternion = this.toQuaternion(heading, e.beta, e.gamma);
+this.rotation =e.alpha as number
+       this.angle = this.fromQuaternionToCompassHeading(this.deviceToScreen(quaternion, e.alpha as number));
+      return;
+      }
       this.angle = (heading as number) * (Math.PI / 180);
       return;
     }
@@ -149,7 +149,7 @@ export class AppAccelerometer {
 
   private handleMotion = (e: DeviceMotionEvent) => {
     if (e.rotationRate?.alpha && e.interval) {
-      this.rotation = this.rotation + e.rotationRate.alpha;
+      //this.rotation = this.rotation + e.rotationRate.alpha;
     }
     const text = `alpha: ${this.rotation}`;
 
